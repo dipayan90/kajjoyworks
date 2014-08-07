@@ -1,0 +1,21 @@
+function [ Metric ] = MetricCalculator(SizeDB,probDist,NumInst,RuleSet,count,result)
+%This function takes the total number of instances, the number of instances in
+%the leaf level and the precident of the rule having the maximum class as
+%the inputs. With these a metric is:
+%calculated Metric = ((Rule Precedent class Numbers)/Total Number of Instances at leaf level)* (Total Number of
+%Instances at leaf level/Total Number of Instances in the DataBase) * (
+%Total number of instances belonging to class x at leaf level/ total number
+%of elements belonging to that class as a whole)
+
+for i = 1:3
+    for j =1: numel(RuleSet)
+        Majority = RuleSet(j).MaxClass;
+        %Metric(i,j)= ((probDist(i,j).prob(Majority))/100 * SizeDB(i,j))*(SizeDB(i,j)/(NumInst/3));
+        Metric(i,j)= ((((probDist(i,j).prob(Majority))/100)*(SizeDB(i,j))/(NumInst/3)) * ( (((probDist(i,j).prob(Majority))/100)*(SizeDB(i,j)))/count(Majority)))*10000;
+        if(result(i,j)==0)
+            Metric(i,j) =0;
+        end
+    end
+end
+end
+

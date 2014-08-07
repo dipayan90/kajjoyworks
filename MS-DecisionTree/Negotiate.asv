@@ -1,0 +1,61 @@
+function [ RuleStack ] = Negotiate( Rule,Num_Class,NumInst,count,D1,D2,D3,Modification )
+%Does the negotiation process.
+%Every cutoff value is tweaked 10% +/- and seen if that results in a better
+%rule. Modification is the value that is set for changing the cutoff. It is
+%a percentage value
+
+%Telling the Algorithm which databases need to agree
+if(strcmp(Rule.DBName,'DB1')==1)
+    selectedDB(1)=2;
+    selectedDB(2)=3;
+end
+
+if(strcmp(Rule.DBName,'DB2')==1)
+    selectedDB(1)=1;
+    selectedDB(2)=3;
+end
+
+
+if(strcmp(Rule.DBName,'DB3')==1)
+    selectedDB(1)=1;
+    selectedDB(2)=2;
+end
+%----------------------------------------------------------------------
+RuleStack1 = struct();
+RuleStack2 = struct();
+RuleStack3 = struct();
+if((selectedDB(1) == 1) | (selectedDB(2) ==1))
+    [ RuleStack1 ] = LocalRuleCreator( Rule,1,Num_Class,NumInst,count,D1,D2,D3,Modification );
+end
+
+if((selectedDB(1) == 2) | (selectedDB(2) ==2))
+    [ RuleStack2 ] = LocalRuleCreator( Rule,2,Num_Class,NumInst,count,D1,D2,D3,Modification );
+end
+
+if((selectedDB(1) == 3) | (selectedDB(2) ==3))
+    [ RuleStack3 ] = LocalRuleCreator( Rule,3,Num_Class,NumInst,count,D1,D2,D3,Modification );
+end
+if(isempty(fieldnames(RuleStack1)))
+    if(isempty(fieldnames(RuleStack2)))
+        RuleStack = RuleStack3;
+    elseif(isempty(fieldnames(RuleStack3)))
+        RuleStack = RuleStack2;
+    else
+    RuleStack = [RuleStack2,RuleStack3]; %DB2 and DB3 have proposed changes
+    end
+end
+if(isempty(fieldnames(RuleStack2)))
+    if(isempty(fieldnames(RuleStack1)))
+        RuleStack = RuleStack3;
+    elseif(isempty(fieldnames(RuleStack3)))
+        RuleStack = RuleStack2;
+    else
+    RuleStack = [RuleStack2,RuleStack3]; %DB2 and DB3 have proposed changes
+    end
+end
+if(isempty(fieldnames(RuleStack3)))
+    RuleStack = [RuleStack1,RuleStack2]; %DB1 and DB2 have proposed new rules.
+end
+%RuleStack = [RuleStack1,RuleStack2,RuleStack3];
+end
+

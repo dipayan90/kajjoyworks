@@ -1,0 +1,7 @@
+function [ output_args ] = MergeRules( RuleSetNew,Num_class )
+%This Function modifies the rules and merges the rules
+[ RuleSetNew ] = RuleModifier( RuleSetNew );
+
+
+end
+
