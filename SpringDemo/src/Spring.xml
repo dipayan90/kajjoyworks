@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+		"http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+	<bean id="triangle" class="org.dipayan.practice.Triangle">
+		<property name="type" value="equillateral" />
+	</bean>
+
+
+	<bean id="square" class="org.dipayan.practice.Square">
+		<constructor-arg type="java.lang.String" value="Uniform" />
+		<constructor-arg type="int" value="20" />
+	</bean>
+
+	<bean id="TriangleParent" class="org.dipayan.practice.TriangleGeometry" abstract="true">
+		<property name="pointA" ref="zeroPoint" />
+	</bean>
+
+	<bean id="TriangleGeometry" class="org.dipayan.practice.TriangleGeometry"
+		parent="TriangleParent">
+		<property name="pointB">
+			<!-- This is an example of an inner bean. Here id is not required as it 
+				will never be used outside -->
+			<bean class="org.dipayan.practice.Point">
+				<property name="x" value="-20" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+		<property name="pointC">
+			<bean class="org.dipayan.practice.Point">
+				<property name="x" value="20" />
+				<property name="y" value="0" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="SquareParent" class="org.dipayan.practice.SquareGeometry">
+		<property name="points">
+			<list>
+				<ref bean="zeroPoint" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="SquareGeometry" class="org.dipayan.practice.SquareGeometry"
+		parent="SquareParent" init-method="initMethod" destroy-method="erase">
+		<property name="points">
+			<list merge="true">
+				<ref bean="squarePoint" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="zeroPoint" class="org.dipayan.practice.Point">
+		<property name="x" value="${PointA.Xcor}" />
+		<property name="y" value="${PointA.Ycor}" />
+	</bean>
+
+	<bean id="squarePoint" class="org.dipayan.practice.Point">
+		<property name="x" value="10" />
+		<property name="y" value="10" />
+	</bean>
+
+	<!-- <bean class="org.dipayan.practice.DisplayNameBeanPostProcessor"/> -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="location.properties" />
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+	
+</beans>
